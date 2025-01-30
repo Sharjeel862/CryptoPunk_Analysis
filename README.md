@@ -150,10 +150,13 @@ OR seller_address = '0x1919db36ca2fa2e15f9000fd9cdc2edcf863e685';
  - Take the daily average of remaining transactions
  
 ```sql
-SELECT COUNT(*) as Transactions
-FROM pricedata
-WHERE buyer_address = '0x1919db36ca2fa2e15f9000fd9cdc2edcf863e685'
-OR seller_address = '0x1919db36ca2fa2e15f9000fd9cdc2edcf863e685';
+WITH Price_Per_Day AS(
+SELECT event_date, USD_price, AVG(USD_price)
+OVER (ORDER BY event_date) AS Avg_Price_USD
+FROM pricedata)
+
+SELECT * FROM Price_Per_Day
+WHERE USD_price > (0.10 * Avg_Price_USD);
 ```
 
 
